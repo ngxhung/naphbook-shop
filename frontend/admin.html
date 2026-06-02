@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NAPH Admin Panel</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <!-- AUTH WRAPPER -->
+    <div id="auth-wrapper" class="auth-wrapper">
+      <div id="form-login" class="auth-box active">
+        <div class="auth-logo"><div class="logo-icon">N</div></div>
+        <h2 class="auth-title">Đăng nhập NAPH Admin</h2>
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Email</label
+            ><input
+              type="email"
+              id="login-email"
+              placeholder="admin@example.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu</label
+            ><input
+              type="password"
+              id="login-pass"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="
+              width: 100%;
+              justify-content: center;
+              padding: 12px;
+              margin-top: 10px;
+            "
+          >
+            👤 Đăng nhập
+          </button>
+        </form>
+        <div class="auth-hint">Demo: admin@example.com / admin123</div>
+      </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="app" id="main-app" style="display: none">
+      <aside>
+        <div class="logo">
+          <div class="logo-icon">N</div>
+          <span>NAPH Admin</span>
+        </div>
+        <nav>
+          <button class="nav-item active" onclick="navigate('dashboard', this)">
+            <i class="ti ti-layout-dashboard"></i>Tổng quan
+          </button>
+          <button class="nav-item" onclick="navigate('books', this)">
+            <i class="ti ti-book"></i>Quản lý Sách
+          </button>
+          <button class="nav-item" onclick="navigate('categories', this)">
+            <i class="ti ti-category"></i>Danh mục
+          </button>
+          <button class="nav-item" onclick="navigate('banners', this)">
+            <i class="ti ti-photo"></i>Banner
+          </button>
+          <button class="nav-item" onclick="navigate('flashsale', this)">
+            <i class="ti ti-flash"></i>Flash Sale
+          </button>
+          <button class="nav-item" onclick="navigate('orders', this)">
+            <i class="ti ti-shopping-cart"></i>Đơn hàng
+            <span class="badge" id="pending-badge">0</span>
+          </button>
+          <button class="nav-item" onclick="navigate('users', this)">
+            <i class="ti ti-users"></i>Người dùng
+          </button>
+          <button class="nav-item" onclick="navigate('payment-methods', this)">
+            <i class="ti ti-wallet"></i>Phương thức thanh toán
+          </button>
+          <button class="nav-item" onclick="navigate('footer', this)">
+            <i class="ti ti-layout-grid"></i>Footer
+          </button>
+        </nav>
+        <div class="sidebar-footer">
+          <a
+            href="index.html"
+            class="btn btn-ghost btn-sm"
+            style="width: 100%; justify-content: center"
+          >
+            <i class="ti ti-arrow-left"></i> Về trang chủ
+          </a>
+        </div>
+      </aside>
+
+      <div class="main">
+        <header>
+          <div class="search-box">
+            <i class="ti ti-search"></i>
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              id="global-search"
+              oninput="handleSearch(this.value)"
+            />
+          </div>
+          <div class="hdr-right user-menu-container">
+            <div class="user-trigger" onclick="toggleDropdown()">
+              <span
+                style="font-size: 13px; font-weight: 600; color: var(--txt)"
+                id="header-user-name"
+                >Admin</span
+              >
+              <div class="avatar" id="header-user-avatar">AD</div>
+            </div>
+            <div class="dropdown-menu" id="user-dropdown">
+              <button onclick="logout()" style="color: var(--danger)">
+                <i class="ti ti-logout"></i> 👋 Đăng xuất
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <div class="page active" id="page-dashboard">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Tổng quan hệ thống</h1>
+              <p>Chỉ số hoạt động NAPH.</p>
+            </div>
+            <button
+              class="btn btn-primary"
+              onclick="
+                navigate('books', document.querySelectorAll('.nav-item')[1])
+              "
+            >
+              <i class="ti ti-plus"></i>Thêm sách
+            </button>
+          </div>
+          <div
+            class="dashboard-filters"
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              gap: 12px;
+              align-items: flex-end;
+              margin-bottom: 20px;
+            "
+          >
+            <div class="form-group" style="margin: 0">
+              <label for="revenueMonthSelect">Tháng</label>
+              <select id="revenueMonthSelect" class="styled-select"></select>
+            </div>
+            <div class="form-group" style="margin: 0">
+              <label for="revenueYearSelect">Năm</label>
+              <select id="revenueYearSelect" class="styled-select"></select>
+            </div>
+            <div
+              style="
+                font-size: 14px;
+                color: var(--txt2);
+                margin-left: auto;
+                min-width: 220px;
+              "
+            >
+              Thống kê doanh thu theo thời gian hoàn thành đơn
+            </div>
+          </div>
+          <div class="stats-grid" id="stats-grid"></div>
+          <div class="table-wrap">
+            <div class="table-top">
+              <h3>Đơn hàng gần đây</h3>
+              <button
+                class="btn btn-ghost btn-sm"
+                onclick="
+                  navigate('orders', document.querySelectorAll('.nav-item')[3])
+                "
+              >
+                🔥 Xem tất cả
+              </button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã ĐH</th>
+                  <th>Khách hàng</th>
+                  <th>Ngày đặt</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="dash-orders"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- BOOKS -->
+        <div class="page" id="page-books">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Quản lý Sách</h1>
+              <p>Thêm, sửa, xóa sách trong kho NAPH.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openBookModal()">
+              <i class="ti ti-plus"></i>Thêm sách mới
+            </button>
+          </div>
+          <div class="table-wrap">
+            <div class="filter-bar">
+              <input
+                type="text"
+                placeholder="Tìm tên sách, tác giả..."
+                id="book-search"
+                oninput="renderBooks()"
+              />
+              <select id="book-cat-filter" onchange="renderBooks()">
+                <option value="">Tất cả danh mục</option>
+              </select>
+              <select id="book-stock-filter" onchange="renderBooks()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="in">Còn hàng</option>
+                <option value="low">Sắp hết</option>
+                <option value="out">Hết hàng</option>
+              </select>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Danh mục</th>
+                  <th>Giá bán</th>
+                  <th style="text-align: center">Tồn kho</th>
+                  <th>Trạng thái</th>
+                  <th style="text-align: right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="books-tbody"></tbody>
+            </table>
+            <div class="pager">
+              <span id="book-pager-info"></span>
+              <div style="display: flex; gap: 6px">
+                <button class="btn btn-ghost btn-sm" onclick="bookPage(-1)">
+                  ‹</button
+                ><button class="btn btn-ghost btn-sm" onclick="bookPage(1)">
+                  ›
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="page" id="page-categories">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Quản lý Danh mục</h1>
+              <p>Phân loại kho sách NAPH.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCatModal()">
+              <i class="ti ti-folder-plus"></i>Thêm danh mục
+            </button>
+          </div>
+          <div class="cat-grid">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tên danh mục</th>
+                    <th style="text-align: center">Số sách</th>
+                    <th style="text-align: right">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="cats-tbody"></tbody>
+              </table>
+            </div>
+            <div>
+              <div class="stat-mini" style="margin-bottom: 14px">
+                <h3
+                  style="font-weight: 700; font-size: 13px; margin-bottom: 14px"
+                >
+                  Thống kê
+                </h3>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 12px;
+                    margin-bottom: 8px;
+                  "
+                >
+                  <span style="color: var(--txt2)">Tổng danh mục</span
+                  ><strong id="cat-total">0</strong>
+                </div>
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    id="cat-progress"
+                    style="width: 100%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BANNERS -->
+        <div class="page" id="page-banners">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Quản lý Banner</h1>
+              <p id="banner-page-subtitle">
+                Thêm, sửa hoặc cập nhật hình ảnh banner cho trang chủ.
+              </p>
+            </div>
+            <div class="banner-section-switch">
+              <button
+                id="bannerHomeBtn"
+                class="btn btn-ghost active"
+                type="button"
+                onclick="setBannerSection('home', this)"
+              >
+                Banner Trang chủ
+              </button>
+              <button
+                id="bannerLoginBtn"
+                class="btn btn-ghost"
+                type="button"
+                onclick="setBannerSection('login', this)"
+              >
+                Banner Login
+              </button>
+            </div>
+            <button class="btn btn-primary" onclick="openBannerModal()">
+              <i class="ti ti-plus"></i>Thêm banner
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ảnh</th>
+                  <th>Tiêu đề</th>
+                  <th>Phụ đề</th>
+                  <th>Loại</th>
+                  <th>Thứ tự</th>
+                  <th style="text-align: right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="banners-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- FLASH SALE -->
+        <div class="page" id="page-flashsale">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Flash Sale</h1>
+              <p>
+                Quản lý chương trình Flash Sale, đồng hồ đếm ngược và sản phẩm
+                giảm giá.
+              </p>
+            </div>
+            <button class="btn btn-primary" onclick="openFlashSaleItemModal()">
+              <i class="ti ti-plus"></i>Thêm sản phẩm
+            </button>
+          </div>
+
+          <div class="form-grid" style="margin-bottom: 24px; gap: 16px">
+            <div class="card card-surface" style="padding: 20px">
+              <h3>Cài đặt Flash Sale</h3>
+              <div class="form-group">
+                <label>Tiêu đề</label
+                ><input
+                  id="flashsale-title"
+                  placeholder="Flash Sale hot nhất"
+                />
+              </div>
+              <div class="form-group">
+                <label>Phụ đề</label
+                ><input
+                  id="flashsale-subtitle"
+                  placeholder="Giảm giá cực sốc trong thời gian có hạn"
+                />
+              </div>
+              <div class="form-group">
+                <label>Thời gian kết thúc</label
+                ><input id="flashsale-endat" type="datetime-local" />
+              </div>
+              <div class="form-group">
+                <label>Màu nền</label
+                ><input
+                  id="flashsale-background"
+                  type="color"
+                  value="#da6cf0"
+                />
+              </div>
+              <button class="btn btn-primary" onclick="saveFlashSaleConfig()">
+                Lưu cài đặt Flash Sale
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Giá gốc</th>
+                  <th>% giảm</th>
+                  <th>Giảm tiền</th>
+                  <th>Giá bán</th>
+                  <th style="text-align: right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="flashsale-items-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div class="page" id="page-orders">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Quản lý Đơn hàng</h1>
+              <p>Kiểm soát tiến trình đơn hàng và duyệt yêu cầu mua sách.</p>
+            </div>
+          </div>
+          <!-- Approve banner -->
+          <div id="approve-banner" class="approve-banner" style="display: none">
+            <i class="ti ti-bell-ringing"></i>
+            <span id="approve-banner-text"></span>
+            <button
+              class="btn btn-primary btn-sm"
+              onclick="
+                navigate('orders', document.querySelectorAll('.nav-item')[3]);
+                setOrderTab(
+                  document.querySelector('.tab[data-status=Processing]'),
+                  'Processing',
+                );
+              "
+            >
+              Xem & Duyệt
+            </button>
+          </div>
+          <div class="table-wrap">
+            <div class="tabs" id="order-tabs">
+              <button
+                class="tab active"
+                data-status=""
+                onclick="setOrderTab(this, '')"
+              >
+                Tất cả (<span id="count-all">0</span>)
+              </button>
+              <button
+                class="tab"
+                data-status="Processing"
+                onclick="setOrderTab(this, 'Processing')"
+              >
+                Chờ duyệt (<span id="count-processing">0</span>)
+              </button>
+              <button
+                class="tab"
+                data-status="Shipped"
+                onclick="setOrderTab(this, 'Shipped')"
+              >
+                Đang giao (<span id="count-shipped">0</span>)
+              </button>
+              <button
+                class="tab"
+                data-status="Delivered"
+                onclick="setOrderTab(this, 'Delivered')"
+              >
+                Hoàn thành (<span id="count-delivered">0</span>)
+              </button>
+              <button
+                class="tab"
+                data-status="Cancelled"
+                onclick="setOrderTab(this, 'Cancelled')"
+              >
+                Đã hủy (<span id="count-cancelled">0</span>)
+              </button>
+            </div>
+            <div class="filter-bar">
+              <input
+                type="text"
+                placeholder="Mã đơn hàng, tên khách hàng..."
+                id="order-search"
+                oninput="renderOrders()"
+              />
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã đơn</th>
+                  <th>Khách hàng</th>
+                  <th>Ngày đặt</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                  <th style="text-align: right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody"></tbody>
+            </table>
+            <div class="pager"><span id="order-pager-info"></span></div>
+          </div>
+        </div>
+
+        <!-- USERS -->
+        <div class="page" id="page-users">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Quản lý Người dùng</h1>
+              <p>Quản lý tài khoản và phân quyền hệ thống NAPH.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openUserModal()">
+              <i class="ti ti-user-plus"></i>Thêm người dùng
+            </button>
+          </div>
+          <div
+            class="stats-grid"
+            style="grid-template-columns: repeat(3, 1fr); margin-bottom: 16px"
+            id="user-stats"
+          ></div>
+          <div class="table-wrap">
+            <div class="filter-bar">
+              <input
+                type="text"
+                placeholder="Tìm tên, email..."
+                id="user-search"
+                oninput="renderUsers()"
+              />
+              <select id="user-role-filter" onchange="renderUsers()">
+                <option value="">Tất cả vai trò</option>
+                <option value="admin">Admin</option>
+                <option value="user">Khách hàng</option>
+              </select>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Người dùng</th>
+                  <th>Vai trò</th>
+                  <th>Email</th>
+                  <th>Trạng thái</th>
+                  <th style="text-align: right">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody"></tbody>
+            </table>
+            <div class="pager">
+              <span id="user-pager-info"></span>
+              <div style="display: flex; gap: 6px">
+                <button class="btn btn-ghost btn-sm" onclick="userPage(-1)">
+                  ‹</button
+                ><button class="btn btn-ghost btn-sm" onclick="userPage(1)">
+                  ›
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAYMENT METHODS -->
+        <div class="page" id="page-payment-methods">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Quản lý Phương thức thanh toán</h1>
+              <p>Thêm, sửa hoặc xóa các phương thức thanh toán QR.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openPaymentMethodModal()">
+              <i class="ti ti-plus"></i> Thêm phương thức
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tên</th>
+                  <th>Mô tả</th>
+                  <th>Hình ảnh</th>
+                  <th>Trạng thái</th>
+                  <th style="width: 120px">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="payment-methods-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- FOOTER SETTINGS -->
+        <div class="page" id="page-footer">
+          <div class="page-header">
+            <div class="page-title">
+              <h1>Cài đặt Footer</h1>
+              <p>
+                Quản lý thông tin liên hệ và mạng xã hội hiển thị ở chân trang.
+              </p>
+            </div>
+            <button class="btn btn-primary" onclick="saveFooterSettings()">
+              Lưu Footer
+            </button>
+          </div>
+          <div class="table-wrap" style="padding: 24px">
+            <form id="footer-settings-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Địa chỉ</label>
+                  <input
+                    id="footer-address"
+                    type="text"
+                    placeholder="Nghiêm Xuân Yên, Định Công, Hoàng Mai, Hà Nội"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Điện thoại</label>
+                  <input
+                    id="footer-phone"
+                    type="text"
+                    placeholder="+84 28 1234 5678"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Email</label>
+                  <input
+                    id="footer-email"
+                    type="email"
+                    placeholder="support@naph.com"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Google Maps URL</label>
+                  <input
+                    id="footer-map"
+                    type="text"
+                    placeholder="https://maps.google.com/..."
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Facebook URL</label>
+                  <input
+                    id="footer-facebook"
+                    type="text"
+                    placeholder="https://www.facebook.com/..."
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Instagram URL</label>
+                  <input
+                    id="footer-instagram"
+                    type="text"
+                    placeholder="https://instagram.com/..."
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>YouTube URL</label>
+                <input
+                  id="footer-youtube"
+                  type="text"
+                  placeholder="https://www.youtube.com/..."
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- end .main -->
+    </div>
+    <!-- end .app -->
+
+    <!-- MODAL: BOOK -->
+    <div class="modal-overlay" id="book-modal">
+      <div class="modal" style="width: 620px">
+        <div class="modal-header">
+          <h3 id="book-modal-title">Thêm sách mới</h3>
+          <button class="modal-close" onclick="closeModal('book-modal')">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="book-id" />
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1/-1">
+              <label>Tên sách *</label
+              ><input
+                type="text"
+                id="book-name"
+                placeholder="Nhập tên sách..."
+              />
+            </div>
+            <div class="form-group">
+              <label>Tác giả *</label
+              ><input
+                type="text"
+                id="book-author"
+                placeholder="Tên tác giả..."
+              />
+            </div>
+            <div class="form-group">
+              <label>Danh mục</label
+              ><select id="book-cat"></select>
+            </div>
+            <div class="form-group">
+              <label>Giá bán ($) *</label
+              ><input
+                type="number"
+                id="book-price"
+                placeholder="0"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label>Tồn kho *</label
+              ><input type="number" id="book-stock" placeholder="0" />
+            </div>
+            <div class="form-group" style="grid-column: 1/-1">
+              <label>Mô tả</label
+              ><textarea
+                id="book-desc"
+                rows="3"
+                placeholder="Mô tả ngắn về sách..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- ẢNH SÁCH -->
+          <div class="img-section">
+            <div class="img-section-title">
+              <i class="ti ti-photo"></i> Ảnh bìa sách
+            </div>
+            <div
+              class="img-upload-area"
+              id="cover-upload-area"
+              onclick="document.getElementById('cover-file').click()"
+            >
+              <div id="cover-preview-wrap">
+                <i
+                  class="ti ti-cloud-upload"
+                  style="font-size: 28px; color: var(--txt2)"
+                ></i>
+                <p style="color: var(--txt2); font-size: 13px; margin-top: 8px">
+                  Nhấp để chọn ảnh bìa
+                </p>
+                <p style="color: var(--txt2); font-size: 11px">
+                  JPG, PNG, WEBP — tối đa 2MB
+                </p>
+              </div>
+            </div>
+            <input
+              type="file"
+              id="cover-file"
+              accept="image/*"
+              style="display: none"
+              onchange="previewCover(this)"
+            />
+            <div
+              id="cover-url-row"
+              style="
+                display: flex;
+                gap: 8px;
+                margin-top: 8px;
+                align-items: center;
+              "
+            >
+              <input
+                type="text"
+                id="book-cover-url"
+                placeholder="Hoặc nhập URL ảnh / emoji 📚"
+                style="
+                  flex: 1;
+                  padding: 8px 12px;
+                  border: 0.5px solid var(--border2);
+                  border-radius: var(--radius);
+                  font-size: 13px;
+                  font-family: inherit;
+                  outline: none;
+                "
+              />
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                onclick="applyCoverUrl()"
+              >
+                Áp dụng
+              </button>
+            </div>
+
+            <!-- Extra images (chỉ hiện khi đang edit) -->
+            <div
+              id="extra-imgs-section"
+              style="display: none; margin-top: 18px"
+            >
+              <div class="img-section-title">
+                <i class="ti ti-photos"></i> Ảnh phụ (gallery)
+              </div>
+              <div
+                id="existing-imgs-list"
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  margin-bottom: 10px;
+                "
+              ></div>
+              <label class="extra-upload-btn">
+                <i class="ti ti-plus"></i> Thêm ảnh phụ
+                <input
+                  type="file"
+                  id="extra-files"
+                  accept="image/*"
+                  multiple
+                  style="display: none"
+                  onchange="previewExtraImages(this)"
+                />
+              </label>
+              <div
+                id="extra-preview-list"
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  margin-top: 10px;
+                "
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeModal('book-modal')">
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="saveBook()">
+            <i class="ti ti-device-floppy"></i>Lưu thông tin
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: PAYMENT METHOD -->
+    <div class="modal-overlay" id="payment-method-modal">
+      <div class="modal" style="width: 520px">
+        <div class="modal-header">
+          <h3 id="payment-method-modal-title">Thêm phương thức thanh toán</h3>
+          <button
+            class="modal-close"
+            onclick="closeModal('payment-method-modal')"
+          >
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="payment-method-id" />
+          <div class="form-group">
+            <label>Tên phương thức *</label>
+            <input
+              type="text"
+              id="payment-method-name"
+              placeholder="Ví dụ: Ngân hàng A..."
+            />
+          </div>
+          <div class="form-group">
+            <label>Mô tả</label>
+            <textarea
+              id="payment-method-description"
+              placeholder="Ví dụ: Quét mã QR để thanh toán..."
+              rows="3"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label>Hình ảnh QR (tải lên từ máy)</label>
+            <input type="file" id="payment-method-file" accept="image/*" />
+            <input type="hidden" id="payment-method-image" />
+            <div style="margin-top: 8px">
+              <img
+                id="payment-method-preview"
+                src=""
+                alt="preview"
+                style="
+                  max-width: 160px;
+                  max-height: 160px;
+                  border-radius: 8px;
+                  display: none;
+                  border: 1px solid var(--border);
+                  padding: 6px;
+                  background: var(--white);
+                "
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Thứ tự sắp xếp</label>
+            <input
+              type="number"
+              id="payment-method-sort"
+              placeholder="1"
+              min="0"
+            />
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="payment-method-active" checked /> Kích
+              hoạt
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-ghost"
+            onclick="closeModal('payment-method-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="savePaymentMethod()">
+            Lưu phương thức
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: CATEGORY -->
+    <div class="modal-overlay" id="cat-modal">
+      <div class="modal" style="width: 420px">
+        <div class="modal-header">
+          <h3 id="cat-modal-title">Thêm danh mục</h3>
+          <button class="modal-close" onclick="closeModal('cat-modal')">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="cat-id" />
+          <div class="form-group">
+            <label>Tên danh mục *</label
+            ><input
+              type="text"
+              id="cat-name"
+              placeholder="Ví dụ: Kỹ năng mềm..."
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeModal('cat-modal')">
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="saveCat()">
+            Lưu danh mục
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: USER -->
+    <div class="modal-overlay" id="user-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="user-modal-title">Thêm người dùng</h3>
+          <button class="modal-close" onclick="closeModal('user-modal')">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="user-id" />
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1/-1">
+              <label>Họ và tên *</label
+              ><input
+                type="text"
+                id="user-name"
+                placeholder="Nguyễn Văn A..."
+              />
+            </div>
+            <div class="form-group">
+              <label>Email *</label
+              ><input
+                type="email"
+                id="user-email"
+                placeholder="email@example.com"
+              />
+            </div>
+            <div class="form-group">
+              <label>Vai trò</label>
+              <select id="user-role">
+                <option value="user">Khách hàng</option>
+                <option value="admin">Quản trị viên</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeModal('user-modal')">
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="saveUser()">
+            Lưu tài khoản
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: BANNER -->
+    <div class="modal-overlay" id="banner-modal">
+      <div class="modal" style="width: 540px">
+        <div class="modal-header">
+          <h3 id="banner-modal-title">Thêm banner</h3>
+          <button class="modal-close" onclick="closeModal('banner-modal')">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="banner-id" />
+          <div class="form-group">
+            <label>Tiêu đề banner</label>
+            <input
+              type="text"
+              id="banner-title"
+              placeholder="Ví dụ: Mỗi cuốn sách một hành trình"
+            />
+          </div>
+          <div class="form-group">
+            <label>Phụ đề</label>
+            <input
+              type="text"
+              id="banner-subtitle"
+              placeholder="Ví dụ: Khám phá kho sách của chúng tôi"
+            />
+          </div>
+          <div class="form-group">
+            <label>Loại banner</label>
+            <select id="banner-section">
+              <option value="home">Banner Trang chủ</option>
+              <option value="login">Banner Login</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ảnh banner</label>
+            <input
+              type="file"
+              id="banner-image"
+              accept="image/*"
+              onchange="previewBannerImage()"
+            />
+            <div id="banner-image-preview" style="margin-top: 12px"></div>
+          </div>
+          <div class="form-group">
+            <label>Thứ tự hiển thị</label>
+            <input
+              type="number"
+              id="banner-sort"
+              placeholder="Số nhỏ hơn hiển thị trước"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeModal('banner-modal')">
+            Hủy
+          </button>
+          <button type="button" class="btn btn-primary" onclick="saveBanner()">
+            Lưu banner
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: FLASH SALE ITEM -->
+    <div class="modal-overlay" id="flashsale-item-modal">
+      <div class="modal" style="width: 540px">
+        <div class="modal-header">
+          <h3 id="flashsale-item-modal-title">Thêm sản phẩm Flash Sale</h3>
+          <button
+            class="modal-close"
+            onclick="closeModal('flashsale-item-modal')"
+          >
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="flashsale-item-id" />
+          <div class="form-group">
+            <label>Sản phẩm</label>
+            <select id="flashsale-product"></select>
+          </div>
+          <div class="form-group">
+            <label>Giảm %</label>
+            <input
+              type="number"
+              id="flashsale-discount-percent"
+              min="0"
+              max="100"
+              placeholder="VD: 20"
+            />
+          </div>
+          <div class="form-group">
+            <label>Giảm tiền ($)</label>
+            <input
+              type="number"
+              id="flashsale-discount-amount"
+              min="0"
+              step="0.01"
+              placeholder="VD: 5.00"
+            />
+          </div>
+          <div class="form-group">
+            <label>Thứ tự</label>
+            <input type="number" id="flashsale-sort" value="0" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-ghost"
+            onclick="closeModal('flashsale-item-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="saveFlashSaleItem()">
+            Lưu sản phẩm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDER DETAIL PANEL -->
+    <div class="detail-panel" id="order-detail">
+      <div class="detail-panel-header">
+        <div>
+          <h3 id="od-title" style="font-weight: 700; font-size: 15px">
+            Chi tiết đơn hàng
+          </h3>
+          <p
+            id="od-date"
+            style="font-size: 12px; color: var(--txt2); margin-top: 3px"
+          ></p>
+        </div>
+        <button onclick="closeOrderDetail()" class="modal-close">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div style="padding: 18px" id="od-content"></div>
+    </div>
+
+    <!-- NOTIFY -->
+    <div class="notify" id="notify">
+      <i class="ti ti-info-circle"></i><span id="notify-msg"></span>
+    </div>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NAPH Bookstore — Minimal Reads</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="naph.css" />
+  </head>
+  <body>
+    <!-- ── TOAST NOTIFICATION ── -->
+    <div id="toast" class="toast hidden">
+      <span id="toastIcon">✓</span>
+      <span id="toastMsg"></span>
+    </div>
+
+    <!-- ── HEADER ── -->
+    <header>
+      <div class="header-inner">
+        <a href="#" class="logo" id="logoLink">
+          <img src="logo1.png" class="logo-icon" alt="NAPH Logo" />
+          <div class="logo-text">
+            <span class="logo-name">NAPH</span>
+            <span class="logo-sub">Bookstore</span>
+          </div>
+        </a>
+
+        <div class="header-search">
+          <svg
+            class="search-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <line x1="16.5" y1="16.5" x2="22" y2="22" />
+          </svg>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Tìm sách, tác giả, thể loại…"
+            autocomplete="off"
+          />
+          <button id="searchButton" class="search-btn" aria-label="Search">
+            🔍 Tìm
+          </button>
+          <!-- Search Results Dropdown -->
+          <div id="searchDropdown" class="search-dropdown hidden">
+            <ul id="searchResultsList" class="search-results-list"></ul>
+          </div>
+        </div>
+
+        <nav class="header-nav">
+          <button class="nav-btn active" data-target="shopPage">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            </svg>
+            Shop
+          </button>
+          <button class="nav-btn" data-target="cartPage">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path
+                d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+              />
+            </svg>
+            Giỏ hàng
+            <span id="cartBadge" class="badge hidden">0</span>
+          </button>
+          <button class="nav-btn" data-target="ordersPage">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 11l3 3L22 4" />
+              <path
+                d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+              />
+            </svg>
+            Đơn hàng
+          </button>
+          <button class="nav-btn" data-target="accountPage">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Tài khoản
+          </button>
+          <a
+            href="admin.html"
+            class="nav-btn admin-only hidden"
+            id="adminNavBtn"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Admin
+          </a>
+        </nav>
+
+        <div class="auth-area">
+          <button id="showLogin" class="btn-ghost">👤 Đăng nhập</button>
+          <button id="showRegister" class="btn-primary">✍️ Đăng ký</button>
+          <div id="userChip" class="user-chip hidden">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <span id="userChipName"></span>
+            <button id="logoutBtn" class="chip-logout" title="Đăng xuất">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── MAIN ── -->
+    <main>
+      <!-- AUTH PAGE -->
+      <section id="authPage" class="page hidden">
+        <div class="auth-wrap">
+          <div class="auth-art">
+            <div class="auth-art-branding">
+              <img src="logo1.png" alt="NAPH Logo" class="auth-art-logo" />
+            </div>
+            <h2 class="auth-art-title">Chào mừng bạn đến với NAPH Bookstore</h2>
+            <div class="auth-banner-shell">
+              <div id="authBannerCarousel" class="auth-banner-carousel"></div>
+            </div>
+            <p class="auth-art-subtitle">
+              Hãy tận hưởng những phút giây thư thái, lưu lại mọi bề mặt để
+              chúng tôi mang đến cho bạn những trải nghiệm tuyệt vời nhất
+            </p>
+          </div>
+          <div class="auth-card">
+            <div class="auth-logo">
+              <img src="logo1.png" alt="NAPH" class="auth-logo-img" />
+              <span>NAPH Bookstore</span>
+            </div>
+            <div class="auth-tabs">
+              <button id="loginTab" class="auth-tab active">
+                👤 Đăng nhập
+              </button>
+              <button id="registerTab" class="auth-tab">✍️ Đăng ký</button>
+            </div>
+
+            <div id="loginForm" class="auth-panel">
+              <h2>Chào mừng trở lại</h2>
+              <p class="auth-desc">
+                Đăng nhập để xem giỏ hàng và lịch sử mua hàng của bạn.
+              </p>
+              <div class="form-group">
+                <label>Email</label>
+                <input
+                  id="loginEmail"
+                  type="email"
+                  placeholder="example@domain.com"
+                />
+              </div>
+              <div class="form-group">
+                <label>Mật khẩu</label>
+                <input
+                  id="loginPassword"
+                  type="password"
+                  placeholder="Nhập mật khẩu"
+                />
+              </div>
+              <button id="loginSubmit" class="btn-primary btn-full">
+                👤 Đăng nhập
+              </button>
+              <div class="auth-hint">
+                <button id="forgotPasswordLink" type="button" class="auth-link">
+                  🔑 Quên mật khẩu?
+                </button>
+                <span>Demo admin:</span> admin@example.com / admin123
+              </div>
+            </div>
+
+            <div id="forgotPasswordForm" class="auth-panel hidden">
+              <h2>Quên mật khẩu</h2>
+              <p class="auth-desc">
+                Nhập email đã đăng ký để nhận mã xác thực qua email.
+              </p>
+              <div class="form-group">
+                <label>Email</label>
+                <input
+                  id="forgotEmail"
+                  type="email"
+                  placeholder="example@domain.com"
+                />
+              </div>
+              <button id="forgotSendCode" class="btn-primary btn-full">
+                📧 Gửi mã xác thực
+              </button>
+              <div id="forgotVerifySection" class="hidden">
+                <div class="form-group">
+                  <label>Mã xác thực</label>
+                  <input
+                    id="forgotCode"
+                    type="text"
+                    maxlength="6"
+                    placeholder="Nhập 6 chữ số"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Mật khẩu mới</label>
+                  <input
+                    id="forgotNewPassword"
+                    type="password"
+                    placeholder="Nhập mật khẩu mới"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Xác nhận mật khẩu</label>
+                  <input
+                    id="forgotConfirmPassword"
+                    type="password"
+                    placeholder="Nhập lại mật khẩu mới"
+                  />
+                </div>
+                <button id="forgotResetSubmit" class="btn-primary btn-full">
+                  🔒 Đặt lại mật khẩu
+                </button>
+              </div>
+              <div id="forgotStatus" class="auth-hint hidden"></div>
+              <div class="auth-hint">
+                <button id="forgotPasswordBack" type="button" class="auth-link">
+                  ← Quay lại
+                </button>
+              </div>
+            </div>
+
+            <div id="registerForm" class="auth-panel hidden">
+              <h2>Tạo tài khoản</h2>
+              <p class="auth-desc">
+                Đăng ký để lưu đơn hàng và khám phá kho sách của chúng tôi.
+              </p>
+              <div class="form-group">
+                <label>Họ và tên</label>
+                <input
+                  id="registerName"
+                  type="text"
+                  placeholder="Nguyễn Văn A"
+                />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input
+                  id="registerEmail"
+                  type="email"
+                  placeholder="example@domain.com"
+                />
+              </div>
+              <div class="form-group">
+                <label>Mật khẩu</label>
+                <input
+                  id="registerPassword"
+                  type="password"
+                  placeholder="Ít nhất 6 ký tự"
+                />
+              </div>
+              <div class="form-group">
+                <label>Xác nhận mật khẩu</label>
+                <input
+                  id="registerConfirm"
+                  type="password"
+                  placeholder="Nhập lại mật khẩu"
+                />
+              </div>
+              <button id="registerSubmit" class="btn-primary btn-full">
+                ✍️ Đăng ký ngay
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SHOP PAGE -->
+      <section id="shopPage" class="page">
+        <!-- Hero -->
+        <div class="hero">
+          <div class="hero-bg" id="heroBannerBg"></div>
+          <div class="hero-content">
+            <p class="hero-eyebrow" id="heroSubtitle">
+              Khám phá kho sách của chúng tôi
+            </p>
+            <h1 class="hero-title" id="heroTitle">
+              Mỗi cuốn sách<br /><em>một hành trình</em>
+            </h1>
+            <p class="hero-desc" id="heroDescription">
+              Hàng nghìn đầu sách được tuyển chọn kỹ lưỡng — từ tiểu thuyết đến
+              khoa học, từ thơ đến lịch sử.
+            </p>
+            <div class="hero-actions">
+              <button id="heroShop" class="btn-primary btn-lg">
+                ✨ Khám phá ngay
+              </button>
+              <button
+                class="btn-ghost btn-lg"
+                data-target="authPage"
+                id="heroAuth"
+              >
+                👤 Đăng nhập
+              </button>
+            </div>
+          </div>
+          <div class="hero-indicators" id="heroIndicators"></div>
+          <div class="hero-controls" id="heroControls">
+            <button
+              type="button"
+              class="hero-arrow hero-arrow--prev"
+              id="heroPrev"
+              aria-label="Banner trước"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              class="hero-arrow hero-arrow--next"
+              id="heroNext"
+              aria-label="Banner sau"
+            >
+              ›
+            </button>
+          </div>
+          <div class="hero-decoration">
+            <div class="floating-book book-a">📚</div>
+            <div class="floating-book book-b">📖</div>
+            <div class="floating-book book-c">🔖</div>
+          </div>
+        </div>
+
+        <section id="flashSaleSection" class="flash-sale" style="display: none">
+          <div class="flash-sale-top">
+            <div class="flash-sale-badge">FLASH SALE</div>
+            <div>
+              <h2 id="flashSaleTitle">Flash Sale NAPH</h2>
+              <p id="flashSaleSubtitle">
+                Giảm giá cực sốc trong thời gian giới hạn.
+              </p>
+            </div>
+            <div class="flash-sale-timer-wrap">
+              <span>Kết thúc trong</span>
+              <div class="flash-sale-timer" id="flashSaleCountdown">
+                00:00:00
+              </div>
+            </div>
+            <button
+              class="btn-ghost flash-sale-view-all"
+              onclick="scrollToSaleProducts()"
+            >
+              🔥 Xem tất cả
+            </button>
+          </div>
+          <div class="flash-sale-list" id="flashSaleList"></div>
+        </section>
+
+        <!-- Products Layout -->
+        <div class="shop-layout">
+          <aside class="sidebar">
+            <div class="filter-card">
+              <div class="filter-header">
+                <span class="filter-title">Thể loại</span>
+              </div>
+              <div id="categoryFilters" class="filter-list"></div>
+            </div>
+            <div class="filter-card">
+              <div class="filter-header">
+                <span class="filter-title">Khoảng giá</span>
+              </div>
+              <div class="price-inputs">
+                <div class="price-field">
+                  <label>Từ ($)</label>
+                  <input id="priceMin" type="number" min="0" value="0" />
+                </div>
+                <div class="price-sep">—</div>
+                <div class="price-field">
+                  <label>Đến ($)</label>
+                  <input id="priceMax" type="number" min="0" value="100" />
+                </div>
+              </div>
+            </div>
+            <div class="filter-card">
+              <div class="filter-header">
+                <span class="filter-title">Sắp xếp</span>
+              </div>
+              <select id="sortSelect" class="styled-select">
+                <option value="featured">Nổi bật</option>
+                <option value="price-asc">Giá tăng dần</option>
+                <option value="price-desc">Giá giảm dần</option>
+                <option value="rating">Đánh giá cao nhất</option>
+              </select>
+            </div>
+            <button id="clearFilters" class="btn-ghost btn-full">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="14"
+                height="14"
+              >
+                <polyline points="23 4 23 10 17 10" />
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+              </svg>
+              Xóa bộ lọc
+            </button>
+          </aside>
+
+          <div class="products-area">
+            <div class="products-toolbar">
+              <span id="productCount" class="product-count"></span>
+            </div>
+            <div class="book-grid" id="productGrid">
+              <div class="grid-loading">
+                <div class="spinner"></div>
+                <p>Đang tải sách…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRODUCT DETAIL PAGE -->
+      <section id="productDetailPage" class="page hidden">
+        <div class="detail-container">
+          <button id="detailBack" class="back-btn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            Quay lại
+          </button>
+          <div class="detail-card">
+            <div class="detail-images-col">
+              <div class="detail-image" id="detailImage"></div>
+              <div class="detail-thumbnails" id="detailThumbnails"></div>
+            </div>
+            <div class="detail-info">
+              <div class="detail-category-badge" id="detailCategory"></div>
+              <h1 id="detailTitle" class="detail-title"></h1>
+              <p id="detailAuthor" class="detail-author"></p>
+              <div class="detail-meta">
+                <span id="detailRating" class="detail-rating"></span>
+                <span id="detailStock" class="detail-stock"></span>
+              </div>
+              <div id="detailPrice" class="detail-price"></div>
+              <p id="detailDescription" class="detail-description"></p>
+              <div class="detail-actions">
+                <button
+                  id="detailAddCart"
+                  class="btn-primary btn-lg"
+                  title="Thêm vào giỏ hàng"
+                  aria-label="Thêm vào giỏ hàng"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    width="16"
+                    height="16"
+                  >
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path
+                      d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                    />
+                  </svg>
+                  🛒
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="detail-review-panel detail-review-panel--detached">
+            <div class="review-panel-header">
+              <div class="review-panel-title">Nhận xét khách hàng</div>
+              <div class="review-panel-summary" id="detailReviewSummary"></div>
+            </div>
+            <div id="detailReviewList" class="review-list"></div>
+            <div class="review-input-card">
+              <div class="review-input-top">
+                <div class="review-form-title">Gửi nhận xét</div>
+                <div class="review-stars-row">
+                  <span id="detailReviewSelectedValue">0.0</span> / 5.0
+                </div>
+              </div>
+              <div
+                id="detailReviewStars"
+                class="star-picker"
+                aria-label="Chọn số sao"
+              ></div>
+              <div class="review-form-hint">
+                Nhấp vào ngôi sao để chọn điểm 0.5 - 5.0.
+              </div>
+              <textarea
+                id="reviewComment"
+                placeholder="Viết cảm nhận của bạn về sách..."
+                rows="4"
+              ></textarea>
+              <button id="submitReviewBtn" class="btn-primary btn-full">
+                Gửi nhận xét
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CART PAGE -->
+      <section id="cartPage" class="page hidden">
+        <div class="page-header">
+          <h1 class="page-title">Giỏ hàng</h1>
+          <p class="page-desc">Xem lại sách trước khi thanh toán.</p>
+        </div>
+        <div id="cartContent"></div>
+      </section>
+
+      <!-- CHECKOUT PAGE -->
+      <section id="checkoutPage" class="page hidden">
+        <div class="page-header">
+          <h1 class="page-title">Thanh toán</h1>
+          <p class="page-desc">
+            Hoàn tất đơn hàng và nhập thông tin giao hàng.
+          </p>
+        </div>
+        <div class="checkout-layout">
+          <div id="checkoutSummary" class="checkout-summary"></div>
+          <div class="checkout-form-card">
+            <h3 class="form-section-title">Phương thức thanh toán</h3>
+            <div
+              id="checkoutPaymentMethods"
+              class="checkout-payment-methods"
+            ></div>
+            <div
+              id="checkoutPaymentPreview"
+              class="checkout-payment-preview"
+            ></div>
+            <h3 class="form-section-title">Thông tin giao hàng</h3>
+            <div class="form-group">
+              <label>Họ và tên</label>
+              <input
+                id="shippingFullName"
+                type="text"
+                placeholder="Nguyễn Văn A"
+              />
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ</label>
+              <input
+                id="shippingAddress"
+                type="text"
+                placeholder="123 Đường ABC"
+              />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Thành phố</label>
+                <input id="shippingCity" type="text" placeholder="Hà Nội" />
+              </div>
+              <!-- postal removed per request -->
+            </div>
+            <div class="form-group">
+              <label>Số điện thoại</label>
+              <input id="shippingPhone" type="tel" placeholder="0912 345 678" />
+            </div>
+            <button id="checkoutSubmit" class="btn-primary btn-full btn-lg">
+              Xác Nhận
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ORDERS PAGE -->
+      <section id="ordersPage" class="page hidden">
+        <div class="page-header">
+          <h1 class="page-title">Lịch sử đơn hàng</h1>
+          <p class="page-desc">Theo dõi các đơn hàng của bạn.</p>
+        </div>
+        <div id="orderList"></div>
+      </section>
+
+      <!-- ACCOUNT PAGE -->
+      <section id="accountPage" class="page hidden">
+        <div class="page-header">
+          <h1 class="page-title">Tài khoản</h1>
+        </div>
+        <div class="account-layout">
+          <div class="account-card">
+            <div class="account-avatar" id="accountAvatarLarge"></div>
+            <div class="account-details">
+              <h2 id="accountName"></h2>
+              <p id="accountEmail" class="text-muted"></p>
+              <p id="accountPhoneTop" class="text-muted"></p>
+              <p id="accountAddressTop" class="text-muted"></p>
+              <span id="accountRole" class="role-badge"></span>
+            </div>
+          </div>
+          <div class="account-stats">
+            <div class="stat-card">
+              <div class="stat-value" id="statOrders">0</div>
+              <div class="stat-label">Đơn hàng</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statSpent">$0</div>
+              <div class="stat-label">Đã chi tiêu</div>
+            </div>
+          </div>
+        </div>
+        <div class="account-edit-panel">
+          <div class="account-edit-card">
+            <div class="account-edit-header">
+              <div>
+                <h2>Thông tin tài khoản</h2>
+                <p class="section-desc">
+                  Cập nhật avatar, địa chỉ nhận hàng, số điện thoại và mật khẩu
+                  để trang cá nhân chuyên nghiệp hơn.
+                </p>
+              </div>
+            </div>
+            <div class="account-edit-grid">
+              <div class="profile-card">
+                <div class="profile-card-header">
+                  <h3>Ảnh đại diện</h3>
+                </div>
+                <div class="avatar-upload">
+                  <div id="accountAvatarPreview" class="avatar-preview"></div>
+                  <label class="upload-box">
+                    <span>Chọn ảnh từ máy tính</span>
+                    <input
+                      type="file"
+                      id="avatarUpload"
+                      accept="image/png,image/jpeg"
+                    />
+                  </label>
+                  <p class="hint">Ảnh vuông JPG/PNG sẽ hiển thị đẹp nhất.</p>
+                </div>
+              </div>
+              <div class="profile-card">
+                <div class="profile-card-header">
+                  <h3>Chi tiết người dùng</h3>
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Họ và tên</label>
+                    <input
+                      id="accountNameInput"
+                      type="text"
+                      placeholder="Nguyễn Văn A"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input
+                      id="accountEmailInput"
+                      type="email"
+                      placeholder="example@domain.com"
+                      disabled
+                    />
+                  </div>
+                  <div class="form-group full">
+                    <label>Địa chỉ nhận hàng</label>
+                    <input
+                      id="accountAddressInput"
+                      type="text"
+                      placeholder="123 Đường ABC, Quận 1"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input
+                      id="accountPhoneInput"
+                      type="tel"
+                      placeholder="0912 345 678"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Mật khẩu mới</label>
+                    <input
+                      id="accountPasswordInput"
+                      type="password"
+                      placeholder="Bỏ trống nếu không đổi"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Xác nhận mật khẩu</label>
+                    <input
+                      id="accountConfirmPasswordInput"
+                      type="password"
+                      placeholder="Nhập lại mật khẩu mới"
+                    />
+                  </div>
+                </div>
+                <button id="saveAccountBtn" class="btn-primary btn-full">
+                  Lưu thay đổi
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN PAGE -->
+      <section id="adminPage" class="page hidden">
+        <div class="page-header">
+          <h1 class="page-title">Bảng điều khiển Admin</h1>
+          <p class="page-desc">
+            Quản lý sách, tài khoản, danh mục và đơn hàng.
+          </p>
+        </div>
+
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-admin="products">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+            Sách
+          </button>
+          <button class="admin-tab" data-admin="accounts">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Tài khoản
+          </button>
+          <button class="admin-tab" data-admin="categories">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
+            </svg>
+            Danh mục
+          </button>
+          <button class="admin-tab" data-admin="orders">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            Đơn hàng
+          </button>
+          <button class="admin-tab" data-admin="reviews">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <path
+                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21z"
+              />
+            </svg>
+            Nhận xét
+          </button>
+        </div>
+
+        <div id="adminProducts" class="admin-panel">
+          <div class="admin-panel-header">
+            <h3>Quản lý sách</h3>
+            <button id="newProductBtn" class="btn-primary">+ Thêm sách</button>
+          </div>
+          <div id="productTable"></div>
+        </div>
+        <div id="adminAccounts" class="admin-panel hidden">
+          <div class="admin-panel-header">
+            <h3>Quản lý tài khoản</h3>
+            <button id="newAccountBtn" class="btn-primary">
+              + Thêm tài khoản
+            </button>
+          </div>
+          <div id="accountTable"></div>
+        </div>
+        <div id="adminCategories" class="admin-panel hidden">
+          <div class="admin-panel-header">
+            <h3>Danh mục sản phẩm</h3>
+            <button id="newCategoryBtn" class="btn-primary">
+              + Thêm danh mục
+            </button>
+          </div>
+          <div id="categoryTable"></div>
+        </div>
+        <div id="adminOrders" class="admin-panel hidden">
+          <div class="admin-panel-header">
+            <h3>Quản lý đơn hàng</h3>
+            <button id="newOrderBtn" class="btn-primary">+ Tạo đơn mới</button>
+          </div>
+          <div id="orderTable"></div>
+        </div>
+        <div id="adminReviews" class="admin-panel hidden">
+          <div class="admin-panel-header">
+            <h3>Quản lý nhận xét</h3>
+            <p class="admin-panel-subtitle">
+              Xem và xóa nhận xét đã gửi bởi khách hàng.
+            </p>
+          </div>
+          <div id="reviewTable"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- CONTACT PAGE -->
+    <section id="contactPage" class="page hidden">
+      <div class="page-header">
+        <h1 class="page-title">Liên hệ chúng tôi</h1>
+        <p class="page-desc">Chúng tôi luôn sẵn sàng hỗ trợ bạn.</p>
+      </div>
+      <div class="contact-layout">
+        <div class="contact-info-card">
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <div class="contact-label">Địa chỉ</div>
+              <div id="contactAddress" class="contact-value"></div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <div>
+              <div class="contact-label">Điện thoại</div>
+              <div id="contactPhone" class="contact-value"></div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">✉️</div>
+            <div>
+              <div class="contact-label">Email</div>
+              <div id="contactEmail" class="contact-value"></div>
+            </div>
+          </div>
+          <div class="contact-socials" id="contactSocials"></div>
+        </div>
+        <div class="contact-map-card">
+          <iframe
+            id="contactMap"
+            src=""
+            width="100%"
+            height="320"
+            style="border: 0; border-radius: 12px"
+            allowfullscreen=""
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+      <!-- Admin edit button (admin only) -->
+      <div class="admin-only" style="text-align: center; margin-top: 24px">
+        <button class="btn-ghost" id="editContactBtn">
+          ✏ Chỉnh sửa thông tin liên hệ
+        </button>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="logo1.png" class="footer-logo" alt="NAPH" />
+          <div>
+            <strong>NAPH Bookstore</strong>
+            <p>Minimal Reads — Đọc sách, sống đẹp.</p>
+          </div>
+        </div>
+        <div class="footer-col footer-explore">
+          <div class="footer-heading">Khám phá</div>
+          <a
+            href="#"
+            onclick="
+              showPage('shopPage');
+              return false;
+            "
+            >Cửa hàng</a
+          >
+          <a
+            href="#"
+            onclick="
+              showPage('contactPage');
+              return false;
+            "
+            >Liên hệ</a
+          >
+          <a
+            href="#"
+            onclick="
+              showPage('ordersPage');
+              return false;
+            "
+            >Đơn hàng</a
+          >
+        </div>
+        <div class="footer-col footer-contact-col">
+          <div class="footer-heading">Liên hệ nhanh</div>
+          <div class="footer-contact-list">
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon">📍</div>
+              <div>
+                <div class="footer-contact-label">Địa chỉ</div>
+                <a id="footerAddress" href="#" target="_blank"
+                  >123 Nguyễn Huệ, Quận 1, TP.HCM</a
+                >
+              </div>
+            </div>
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon">📞</div>
+              <div>
+                <div class="footer-contact-label">Điện thoại</div>
+                <a id="footerPhone" href="tel:+842812345678"></a>
+              </div>
+            </div>
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon">✉️</div>
+              <div>
+                <div class="footer-contact-label">Email</div>
+                <a id="footerEmail" href="mailto:support@naph.com"></a>
+              </div>
+            </div>
+          </div>
+          <div class="footer-socials" id="footerSocials"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy" id="footerCopy">
+          © 2026 NAPH Bookstore. All rights reserved.
+        </p>
+        <div class="footer-policy-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ADMIN MODAL -->
+    <div id="adminEditorModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="adminEditorTitle">Biểu mẫu</h3>
+          <button id="closeAdminEditor" class="modal-close" aria-label="Đóng">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <form id="adminEditorForm" class="modal-form">
+          <div id="adminEditorFields"></div>
+          <div class="modal-actions">
+            <button type="button" id="adminEditorCancel" class="btn-ghost">
+              Hủy
+            </button>
+            <button type="submit" class="btn-primary">Lưu thay đổi</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

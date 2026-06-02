@@ -1,0 +1,101 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "name": "Admin User",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": "user-1",
+      "name": "Happy Reader",
+      "email": "reader@example.com",
+      "password": "reader123",
+      "role": "user"
+    },
+    {
+      "id": "user-kcnoptk",
+      "name": "Đặng Thành Nam",
+      "email": "dangthanhnamvlogs@gmail.com",
+      "password": "nam1092006",
+      "role": "user"
+    }
+  ],
+  "categories": [
+    {
+      "id": "fiction",
+      "name": "Fiction"
+    },
+    {
+      "id": "nonfiction",
+      "name": "Non-Fiction"
+    },
+    {
+      "id": "mystery",
+      "name": "Mystery"
+    },
+    {
+      "id": "scifi",
+      "name": "Sci-Fi"
+    }
+  ],
+  "products": [
+    {
+      "id": "b1",
+      "title": "The Silent Forest",
+      "author": "Bevin Gilter",
+      "category": "fiction",
+      "price": 14.99,
+      "rating": 4,
+      "stock": 12,
+      "description": "A calming journey through a hidden woodland filled with gentle mysteries.",
+      "cover": "🌲"
+    },
+    {
+      "id": "b2",
+      "title": "Mindfulness & Me",
+      "author": "Drown Senten",
+      "category": "nonfiction",
+      "price": 16.49,
+      "rating": 4.5,
+      "stock": 18,
+      "description": "Simple daily habits to help your mind stay centered and calm.",
+      "cover": "🧘"
+    },
+    {
+      "id": "b3",
+      "title": "The Art of Calm",
+      "author": "Drown Gulter",
+      "category": "nonfiction",
+      "price": 12.99,
+      "rating": 4.5,
+      "stock": 9,
+      "description": "A practical guide to building quiet routines and creative focus.",
+      "cover": "🏔️"
+    },
+    {
+      "id": "b4",
+      "title": "The Sgrax",
+      "author": "Davet Senten",
+      "category": "fiction",
+      "price": 18.25,
+      "rating": 4,
+      "stock": 6,
+      "description": "An imaginative tale of a secret society and twilight cities.",
+      "cover": "🌅"
+    },
+    {
+      "id": "b5",
+      "title": "The Billness & Der",
+      "author": "David Gulter",
+      "category": "mystery",
+      "price": 15.5,
+      "rating": 4.5,
+      "stock": 10,
+      "description": "A suspenseful mystery full of clever twists and memorable characters.",
+      "cover": "👥"
+    }
+  ],
+  "orders": []
+}
